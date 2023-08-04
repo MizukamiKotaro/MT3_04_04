@@ -197,6 +197,7 @@
     <ClInclude Include="Behavior.h" />
     <ClInclude Include="Pendulum.h" />
     <ClInclude Include="ConicalPendulum.h" />
+    <ClInclude Include="Capsuleh.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig">

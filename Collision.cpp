@@ -1,4 +1,4 @@
-﻿#include "Collision.h"
+#include "Collision.h"
 #include"calc.h"
 #include"MyVector3.h"
 #include<cmath>
@@ -195,7 +195,7 @@ bool Collision::IsInPlane(const Ray& ray, const Plane& plane) {
 	MyVector3 pos = plane.normal;
 	pos *= plane.distance;
 
-	MyVector3 perpendiculars[4];
+	MyVector3 perpendiculars[4]{};
 
 	perpendiculars[0] = Calc::Normalize(Calc::Perpendicular(plane.normal));
 	perpendiculars[1] = { -perpendiculars[0].x,-perpendiculars[0].y, -perpendiculars[0].z };
@@ -229,7 +229,7 @@ bool Collision::IsInPlane(const Line& line, const Plane& plane) {
 	MyVector3 pos = plane.normal;
 	pos *= plane.distance;
 
-	MyVector3 perpendiculars[4];
+	MyVector3 perpendiculars[4]{};
 
 	perpendiculars[0] = Calc::Normalize(Calc::Perpendicular(plane.normal));
 	perpendiculars[1] = { -perpendiculars[0].x,-perpendiculars[0].y, -perpendiculars[0].z };

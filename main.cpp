@@ -37,7 +37,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	char preKeys[256] = {0};
 
 	Plane plane;
-	plane.normal = MyVector3(-0.2f, 0.9f, -0.3f).Normalize();
+	plane.normal = MyVector3(-0.2f, 1.2f, -0.3f).Normalize();
 	plane.distance = 0.0f;
 
 	Ball ball{};
@@ -47,7 +47,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 	ball.radius = 0.05f;
 	ball.color = 0xFFFFFFFF;
 
-	float e = 0.8f;
+	float e = 0.7f;
 
 	bool start = false;
 
@@ -76,12 +76,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 		if (ImGui::Button("Start")) {
 			start = true;
 		}
-		
+		ImGui::SliderFloat3("normal", &plane.normal.x, -1.0f, 1.0f);
+
+		plane.normal = plane.normal.Normalize();
+
 		ImGui::Text("R : Reset");
 		if (ImGui::Button("Reset")) {
 			
 			ball.position = { 0.8f,1.2f,0.3f };
 			ball.velocity = {};
+			plane.normal = MyVector3(-0.2f, 1.2f, -0.3f).Normalize();
 
 			start = false;
 			
@@ -100,12 +104,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 			ball.velocity += ball.acceleration * deltaTime;
 			ball.position += ball.velocity * deltaTime;
 
-			Sphere sphere{};
-			sphere.Initialize(ball.position, ball.radius);
-
-			if (Collision::IsCollision(sphere, plane)) {
-				ball.velocity = Reflect(ball.velocity, plane.normal) * e;
-			}
+			Reflect(&ball, plane, e);
 
 			if (ball.position.y <= -1.0f) {
 				ball.position = { 0.8f,1.2f,0.3f };
@@ -117,6 +116,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In
 			
 			ball.position = { 0.8f,1.2f,0.3f };
 			ball.velocity = {};
+
+			plane.normal = MyVector3(-0.2f, 1.2f, -0.3f).Normalize();
 			
 			start = false;
 

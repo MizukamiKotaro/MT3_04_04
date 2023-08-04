@@ -1,6 +1,8 @@
 #include "Behavior.h"
 #include<cmath>
 #include "calc.h"
+#include "Capsuleh.h"
+#include "Collision.h"
 
 void BehaviorSpring(Spring* spring, Ball* ball) {
 
@@ -131,4 +133,52 @@ MyVector3 Reflect(const MyVector3& input, const MyVector3& normal) {
 	MyVector3 r = input - 2 * (Calc::Dot(input, normal)) * normal;
 
 	return r;
+}
+
+void Reflect(Ball* ball, const MyVector3& normal, const float& distance, const float& e) {
+
+	float deltaTime = 1.0f / 60.0f;
+
+	Capsule cap{};
+	cap.radius = ball->radius;
+	cap.segment.origin = ball->position - ball->velocity * deltaTime;
+	cap.segment.diff = ball->position - cap.segment.origin;
+	cap.segment.diff = cap.segment.diff + cap.radius * cap.segment.diff.Normalize();
+
+	if (Calc::Dot(cap.segment.diff, normal) == 0) {
+		return;
+	}
+
+	float t = (distance - Calc::Dot(cap.segment.origin, normal)) / Calc::Dot(cap.segment.diff, normal);
+
+	if (t >= 0 && t <= 1) {
+		
+		ball->position = cap.segment.origin + cap.segment.diff * t - cap.segment.diff.Normalize() * cap.radius;
+
+		ball->velocity = Reflect(ball->velocity, normal) * e;
+	}
+}
+
+void Reflect(Ball* ball, const Plane& plane, const float& e) {
+
+	float deltaTime = 1.0f / 60.0f;
+
+	Capsule cap{};
+	cap.radius = ball->radius;
+	cap.segment.origin = ball->position - ball->velocity * deltaTime;
+	cap.segment.diff = ball->position - cap.segment.origin;
+	cap.segment.diff = cap.segment.diff + cap.radius * cap.segment.diff.Normalize();
+
+	if (Calc::Dot(cap.segment.diff, plane.normal) == 0) {
+		return;
+	}
+
+	float t = (plane.distance - Calc::Dot(cap.segment.origin, plane.normal)) / Calc::Dot(cap.segment.diff, plane.normal);
+
+	if (t >= 0 && t <= 1) {
+
+		ball->position = cap.segment.origin + cap.segment.diff * t - cap.segment.diff.Normalize() * cap.radius;
+
+		ball->velocity = Reflect(ball->velocity, plane.normal) * e;
+	}
 }
